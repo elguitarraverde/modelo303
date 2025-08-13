@@ -2,6 +2,7 @@
 
 namespace FacturaScripts\Test\Plugins;
 
+use Exception;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Model\FacturaCliente;
 use FacturaScripts\Core\Tools;
@@ -18,6 +19,7 @@ class ComprobarFechaDevengoTest extends Modelo303TestCase
      * y si no existe por la fecha de la factura.
      *
      * @return void
+     * @throws Exception
      */
     public function testComprobarFechaDevengo()
     {

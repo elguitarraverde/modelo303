@@ -42,13 +42,13 @@ use FacturaScripts\Dinamic\Model\RegularizacionImpuesto;
 class EditRegularizacionImpuesto extends EditController
 {
     /** @var float */
-    public $purchases;
+    public float $purchases;
 
     /** @var float */
-    public $sales;
+    public float $sales;
 
     /** @var float */
-    public $total;
+    public float $total;
 
     /** @var array */
     public array $modelo303 = [];
@@ -63,7 +63,7 @@ class EditRegularizacionImpuesto extends EditController
         $data = parent::getPageData();
         $data['menu'] = 'reports';
         $data['title'] = 'model-303-390';
-        $data['icon'] = 'fas fa-balance-scale-right';
+        $data['icon'] = 'fa-solid fa-balance-scale-right';
         return $data;
     }
 
@@ -97,7 +97,7 @@ class EditRegularizacionImpuesto extends EditController
     {
         $reg = new RegularizacionImpuesto();
         $code = $this->request->get('code');
-        if (false === $reg->loadFromCode($code)) {
+        if (false === $reg->load($code)) {
             Tools::log()->warning('record-not-found');
             return;
         }
@@ -126,7 +126,7 @@ class EditRegularizacionImpuesto extends EditController
     /**
      * Add the view set.
      */
-    protected function createViews()
+    protected function createViews(): void
     {
         parent::createViews();
         $this->setTabsPosition('bottom');
@@ -137,7 +137,7 @@ class EditRegularizacionImpuesto extends EditController
 
     protected function createViewsEntryLine(string $viewName = 'ListPartida'): void
     {
-        $this->addListView($viewName, 'Partida', 'accounting-entry', 'fas fa-balance-scale');
+        $this->addListView($viewName, 'Partida', 'accounting-entry', 'fa-solid fa-balance-scale');
         $this->disableButtons($viewName, true);
     }
 
@@ -154,7 +154,7 @@ class EditRegularizacionImpuesto extends EditController
 
     protected function createViewsTaxSummary(string $viewName = 'ListPartidaImpuestoResumen'): void
     {
-        $this->addHtmlView($viewName, 'Modelo303', 'Impuesto', 'summary', 'fas fa-list-alt');
+        $this->addHtmlView($viewName, 'Modelo303', 'Impuesto', 'summary', 'fa-solid fa-list-alt');
         $this->disableButtons($viewName);
     }
 
@@ -173,7 +173,7 @@ class EditRegularizacionImpuesto extends EditController
      *
      * @return bool
      */
-    protected function execPreviousAction($action)
+    protected function execPreviousAction($action): bool
     {
         switch ($action) {
             case 'create-accounting-entry':
@@ -184,7 +184,7 @@ class EditRegularizacionImpuesto extends EditController
         return parent::execPreviousAction($action);
     }
 
-    protected function exportAction()
+    protected function exportAction(): void
     {
         $this->exportManager->setOrientation('landscape');
         parent::exportAction();
@@ -227,7 +227,7 @@ class EditRegularizacionImpuesto extends EditController
             new DataBaseWhere('codejercicio', $this->getModel()->codejercicio),
             new DataBaseWhere('fecha', $this->getModel()->fechainicio, '>='),
             new DataBaseWhere('fecha', $this->getModel()->fechafin, '<'),
-        ], [], 0, 0);
+        ]);
         $idsAsientos = array_unique(array_column($asientos, Asiento::primaryColumn()));
 
         if(empty($idsAsientos)) {
@@ -238,7 +238,7 @@ class EditRegularizacionImpuesto extends EditController
         $partidas = Partida::all([
             new DataBaseWhere('idasiento', $idsAsientos, 'IN'),
             new DataBaseWhere('codsubcuenta', $subcuentas, 'IN')
-        ], [], 0, 0);
+        ]);
 
         // agrupamos por subcuenta
         $partidasAgrupadas = [];
@@ -390,7 +390,7 @@ class EditRegularizacionImpuesto extends EditController
 
         // obtenemos todos los ids de los asientos de las regularizaciones
         $ids = [];
-        foreach (RegularizacionImpuesto::all([], [], 0, 0) as $reg) {
+        foreach (RegularizacionImpuesto::all() as $reg) {
             if ($reg->idasiento) {
                 $ids[] = $reg->idasiento;
             }
@@ -408,7 +408,7 @@ class EditRegularizacionImpuesto extends EditController
      * @param string $viewName
      * @param BaseView $view
      */
-    protected function loadData($viewName, $view)
+    protected function loadData($viewName, $view): void
     {
         switch ($viewName) {
             case 'EditRegularizacionImpuesto':
@@ -446,7 +446,7 @@ class EditRegularizacionImpuesto extends EditController
                 'action' => 'create-accounting-entry',
                 'color' => 'success',
                 'confirm' => true,
-                'icon' => 'fas fa-balance-scale',
+                'icon' => 'fa-solid fa-balance-scale',
                 'label' => 'create-accounting-entry',
                 'row' => 'actions'
             ]);
