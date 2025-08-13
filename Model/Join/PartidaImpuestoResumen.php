@@ -45,7 +45,7 @@ class PartidaImpuestoResumen extends JoinModel
     /**
      * Reset the values of all model view properties.
      */
-    public function clear()
+    public function clear(): void
     {
         parent::clear();
         $this->baseimponible = 0.0;
@@ -130,7 +130,7 @@ class PartidaImpuestoResumen extends JoinModel
      *
      * @param array $data
      */
-    protected function loadFromData($data)
+    protected function loadFromData(array $data): void
     {
         parent::loadFromData($data);
 

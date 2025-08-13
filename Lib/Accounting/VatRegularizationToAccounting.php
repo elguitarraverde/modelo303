@@ -38,10 +38,10 @@ use FacturaScripts\Dinamic\Model\Subcuenta;
 class VatRegularizationToAccounting
 {
     /** @var float */
-    private $credit = 0.0;
+    private float $credit = 0.0;
 
     /** @var float */
-    private $debit = 0.0;
+    private float $debit = 0.0;
 
     public function generate(RegularizacionImpuesto &$reg): bool
     {
@@ -64,10 +64,9 @@ class VatRegularizationToAccounting
         if ($this->addAccountingTaxLines($accEntry, $reg) &&
             $this->addAccountingResultLine($accEntry, $reg) &&
             $accEntry->isBalanced()) {
-
             $accEntry->importe = max([$this->debit, $this->credit]);
             if ($accEntry->save()) {
-                $reg->idasiento = $accEntry->primaryColumnValue();
+                $reg->idasiento = $accEntry->id();
                 $reg->fechaasiento = $accEntry->fecha;
                 return true;
             }
@@ -84,7 +83,7 @@ class VatRegularizationToAccounting
 
         // si el debe es mayor que el haber, seleccionamos la cuenta de acreedores
         $id = $this->debit >= $this->credit ? $reg->idsubcuentaacr : $reg->idsubcuentadeu;
-        if (false === $subaccount->loadFromCode($id)) {
+        if (false === $subaccount->load($id)) {
             return false;
         }
 
@@ -104,14 +103,14 @@ class VatRegularizationToAccounting
     {
         foreach ($this->getSubtotals($reg) as $idsubcuenta => $total) {
             $subaccount = new Subcuenta();
-            if (false === $subaccount->loadFromCode($idsubcuenta)) {
+            if (false === $subaccount->load($idsubcuenta)) {
                 return false;
             }
 
             $newLine = $accEntry->getNewLine();
             $newLine->setAccount($subaccount);
-            $newLine->debe = round($total['debe'], FS_NF0);
-            $newLine->haber = round($total['haber'], FS_NF0);
+            $newLine->debe = round($total['debe'], Tools::settings('default', 'decimals'));
+            $newLine->haber = round($total['haber'], Tools::settings('default', 'decimals'));
             if ($newLine->save()) {
                 $this->debit += $newLine->debe;
                 $this->credit += $newLine->haber;
@@ -176,9 +175,9 @@ class VatRegularizationToAccounting
             new DataBaseWhere('idasiento', 'IS NULL')
         ];
 
-        $facturasClienteSinAsiento = FacturaCliente::all($where, [], 0, 0);
+        $facturasClienteSinAsiento = FacturaCliente::all($where);
 
-        $facturasProveedorSinAsiento = FacturaProveedor::all($where, [], 0, 0);
+        $facturasProveedorSinAsiento = FacturaProveedor::all($where);
 
         if (count($facturasClienteSinAsiento) > 0 || count($facturasProveedorSinAsiento) > 0) {
             return false;
