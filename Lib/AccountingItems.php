@@ -28,7 +28,7 @@ class AccountingItems
             new DataBaseWhere('codejercicio', $codejercicio),
             new DataBaseWhere('fecha', $fechainicio, '>='),
             new DataBaseWhere('fecha', $fechafin, '<'),
-        ], [], 0, 0);
+        ]);
         $idsAsientos = array_unique(array_column($asientos, Asiento::primaryColumn()));
 
         if(empty($idsAsientos)) {
@@ -39,7 +39,7 @@ class AccountingItems
         $partidas = Partida::all([
             new DataBaseWhere('idasiento', $idsAsientos, 'IN'),
             new DataBaseWhere('codsubcuenta', $subcuentas, 'IN')
-        ], [], 0, 0);
+        ]);
 
         $partidasAgrupadas = [];
         foreach ($partidas as $partida) {

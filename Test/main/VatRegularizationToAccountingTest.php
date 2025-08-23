@@ -19,6 +19,7 @@
 
 namespace FacturaScripts\Test\Plugins;
 
+use Exception;
 use FacturaScripts\Dinamic\Model\RegularizacionImpuesto;
 use FacturaScripts\Plugins\Modelo303\Lib\Accounting\VatRegularizationToAccounting;
 use FacturaScripts\Test\Traits\DefaultSettingsTrait;
@@ -37,6 +38,9 @@ final class VatRegularizationToAccountingTest extends Modelo303TestCase
         self::installAccountingPlan();
     }
 
+    /**
+     * @throws Exception
+     */
     public function testCreate()
     {
         // creamos una factura de proveedor

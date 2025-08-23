@@ -19,19 +19,17 @@
 
 namespace FacturaScripts\Plugins\Modelo303\Controller;
 
-use FacturaScripts\Core\Base\DataBase;
+use Exception;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\DataSrc\Impuestos;
 use FacturaScripts\Core\DataSrc\Series;
 use FacturaScripts\Core\KernelException;
 use FacturaScripts\Core\Lib\ExtendedController\BaseView;
 use FacturaScripts\Core\Lib\ExtendedController\EditController;
-use FacturaScripts\Core\Model\Asiento;
 use FacturaScripts\Core\Tools;
 use FacturaScripts\Dinamic\Lib\Accounting\VatRegularizationToAccounting;
 use FacturaScripts\Dinamic\Lib\SubAccountTools;
 use FacturaScripts\Dinamic\Model\Join\PartidaImpuestoResumen;
-use FacturaScripts\Dinamic\Model\Partida;
 use FacturaScripts\Dinamic\Model\RegularizacionImpuesto;
 use FacturaScripts\Plugins\Modelo303\Lib\Modelo303Calculator;
 use FacturaScripts\Plugins\Modelo303\Lib\Modelo303Data;
@@ -260,6 +258,9 @@ class EditRegularizacionImpuesto extends EditController
      *
      * @param string $viewName
      * @param BaseView $view
+     *
+     * @throws KernelException
+     * @throws Exception
      */
     protected function loadData($viewName, $view): void
     {
@@ -291,6 +292,9 @@ class EditRegularizacionImpuesto extends EditController
         }
     }
 
+    /**
+     * @throws Exception
+     */
     protected function setCreateAcEntryButton(string $viewName): void
     {
         $idasiento = $this->getViewModelValue($this->getMainViewName(), 'idasiento');
